@@ -10,12 +10,14 @@ public enum SMCrashType: String {
 
 public class SMCrashInfo {
     
+    public let date: TimeInterval
     public let type: SMCrashType
     public let name: String
     public let reason: String
     public let callStack: [String]
     
-    init(type:SMCrashType, name:String, reason:String, callStack:[String]) {
+    public init(date: TimeInterval, type:SMCrashType, name:String, reason:String, callStack:[String]) {
+        self.date = date
         self.type = type
         self.name = name
         self.reason = reason
@@ -94,7 +96,7 @@ public class SMCrashHandler {
         let name = exception.name
         
         
-        let info = SMCrashInfo(type: .exception, name: name.rawValue, reason: reason, callStack: exception.callStackSymbols)
+        let info = SMCrashInfo(date: Date().timeIntervalSince1970, type: .exception, name: name.rawValue, reason: reason, callStack: exception.callStackSymbols)
         for delegate in SMCrashHandler.delegates {
             delegate.delegate?.crashHandlerDidCatchCrash(with: info)
         }
@@ -106,10 +108,10 @@ public class SMCrashHandler {
         }
         
         var stack = Thread.callStackSymbols
-//        stack.removeFirst(2)
+        stack.removeFirst(2)
         let reason = "Signal \(SMCrashHandler.name(of: signal))(\(signal)) was raised.\n"
         
-        let info = SMCrashInfo(type: .signal, name: SMCrashHandler.name(of: signal), reason: reason, callStack: stack)
+        let info = SMCrashInfo(date: Date().timeIntervalSince1970, type: .signal, name: SMCrashHandler.name(of: signal), reason: reason, callStack: stack)
         for delegate in SMCrashHandler.delegates {
             delegate.delegate?.crashHandlerDidCatchCrash(with: info)
         }
