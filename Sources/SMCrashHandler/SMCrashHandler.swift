@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 public protocol SMCrashDelegate: NSObjectProtocol {
     func crashHandlerDidCatchCrash(with info: SMCrashInfo)
